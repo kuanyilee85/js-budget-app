@@ -3,7 +3,32 @@
 //3. Structure: separate data by different controller: a) budgetController, b) UIController, c) controller
 
 // **BUDGET CONTROLLER**
-var budgetController = (function() {})();
+var budgetController = (function() {
+  //use object and function constructor to store multiple data for expense
+  var Expense = function(id, description, value) {
+    this.id = id;
+    this.description = description;
+    this.value = value;
+  };
+
+  //use object and function constructor to store multiple data for income
+  var Income = function(id, description, value) {
+    this.id = id;
+    this.description = description;
+    this.value = value;
+  };
+
+  var data = {
+    allItems: {
+      exp: [],
+      inc: []
+    },
+    totals: {
+      exp: [],
+      inc: []
+    }
+  };
+})();
 
 // **UI CONTROLLER**
 var UIController = (function() {
