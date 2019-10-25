@@ -67,6 +67,28 @@ var budgetController = (function() {
       return newItem;
     },
 
+    deleteItem=function(type,id){
+      var ids, index;
+
+      // if want to delete item with id=6
+      // not just use data.allItems[type][id]; because id are not in orders
+      // ex: ids = [1 2 4 6 8]
+      // the index of id=6 is 3
+
+      // mpa() will go through each item and the callback function will return the current id in order
+      ids = data.allItems[type].map(function(current){
+        return current.id;
+      });
+
+      // get the index of the item's ID in ids by indexOf()
+      index = ids.indexOf(id);
+
+      // -1 means non-existent; (so if not equal to -1); remove the item by splice() by index just get and only remove 1 item
+      if(index !==-1){
+        data.allItems[type].splice(index, 1);
+      }
+    },
+
     calculateBudget: function() {
       //calculate total income and expenses
       calculateTotal("exp");
