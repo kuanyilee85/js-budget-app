@@ -67,7 +67,7 @@ var budgetController = (function() {
       return newItem;
     },
 
-    deleteItem=function(type,id){
+    deleteItem: function(type, id) {
       var ids, index;
 
       // if want to delete item with id=6
@@ -76,7 +76,7 @@ var budgetController = (function() {
       // the index of id=6 is 3
 
       // mpa() will go through each item and the callback function will return the current id in order
-      ids = data.allItems[type].map(function(current){
+      ids = data.allItems[type].map(function(current) {
         return current.id;
       });
 
@@ -84,7 +84,7 @@ var budgetController = (function() {
       index = ids.indexOf(id);
 
       // -1 means non-existent; (so if not equal to -1); remove the item by splice() by index just get and only remove 1 item
-      if(index !==-1){
+      if (index != -1) {
         data.allItems[type].splice(index, 1);
       }
     },
@@ -168,6 +168,12 @@ var UIController = (function() {
 
       //Insert the HTML into the DOM
       document.querySelector(element).insertAdjacentHTML("beforeend", newHtml);
+    },
+
+    deleteListItem: function(selectorID) {
+      // in JS, can only remove the child element, so need to know where is the parent element, then remove its child element
+      var el = document.getElementById(selectorID);
+      el.parentNode.removeChild(el);
     },
 
     clearFields: function() {
@@ -276,13 +282,16 @@ var controller = (function(budgetCtrl, UICtrl) {
       // inc-1
       splitID = itemID.split("-");
       type = splitID[0];
-      ID = splitID[1];
+      ID = parseInt(splitID[1]);
 
       // 1. Delete the item from data structure
+      budgetCtrl.deleteItem(type, ID);
 
       // 2. Delete the item from UI
+      UICtrl.deleteListItem(itemID);
 
       // 3. Update and show the new budget
+      updateBudget();
     }
   };
 
