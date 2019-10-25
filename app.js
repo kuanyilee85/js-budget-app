@@ -112,7 +112,8 @@ var UIController = (function() {
     budgetLabel: ".budget__value",
     incomeLabel: ".budget__income--value",
     expensesLabel: ".budget__expenses--value",
-    percentageLabel: ".budget__expenses--percentage"
+    percentageLabel: ".budget__expenses--percentage",
+    container: ".container"
   };
   return {
     getInput: function() {
@@ -131,11 +132,11 @@ var UIController = (function() {
       if (type === "inc") {
         element = DOMstrings.incomeContainer;
         html =
-          '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+          '<div class="item clearfix" id="inc-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
       } else if (type === "exp") {
         element = DOMstrings.expensesContainer;
         html =
-          '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+          '<div class="item clearfix" id="exp-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
       }
 
       //Replace the placeholder text with some actual data
@@ -186,7 +187,7 @@ var UIController = (function() {
   };
 })();
 
-// **GLOBAL CONTROLLER**
+// **GLOBAL APP CONTROLLER**
 // pass the budgetController and UIController as argument, so that the can be connected inside controller
 // this controller can use other's code
 var controller = (function(budgetCtrl, UICtrl) {
@@ -197,12 +198,17 @@ var controller = (function(budgetCtrl, UICtrl) {
     // create the event by addEventListener when button was clicked
     document.querySelector(DOM.inputBtn).addEventListener("click", ctrlAddItem);
 
-    // create the event by addEventListener when return was pressed
+    // create the event by ctrlAddItem when return was pressed
     document.addEventListener("keypress", function(event) {
       if (event.keyCode === 13 || event.which === 13) {
         ctrlAddItem();
       }
     });
+
+    // delete the event by ctrlDeleteItem using "Event Delegation"
+    document
+      .querySelector(DOM.container)
+      .addEventListener("click", ctrlDeleteItem);
   };
 
   var updateBudget = function() {
@@ -233,6 +239,28 @@ var controller = (function(budgetCtrl, UICtrl) {
 
       // 5.Calculate and update the budget
       updateBudget();
+    }
+  };
+
+  // use DOM Traversing to find the class and ID when we click the delete button and later delete the item
+  var ctrlDeleteItem = function(event) {
+    var itemID, splitID, type, ID;
+    // use parentNode to find out the item ID which we can use to delete item later
+    itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+
+    // split the ID when ctrlDeleteItem is fire and if there is a itemID
+    // use split function to elimate the '-' by split('-'); ex: 'inc-1' to (inc, 1)
+    if (itemID) {
+      // inc-1
+      splitID = itemID.split("-");
+      type = splitID[0];
+      ID = splitID[1];
+
+      // 1. Delete the item from data structure
+
+      // 2. Delete the item from UI
+
+      // 3. Update and show the new budget
     }
   };
 
