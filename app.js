@@ -202,6 +202,12 @@ var UIController = (function() {
     return (type === "exp" ? "-" : "+") + " " + int + "." + dec;
   };
 
+  var nodeListForEach = function(list, callback) {
+    for (var i = 0; i < list.length; i++) {
+      callback(list[i], i);
+    }
+  };
+
   return {
     getInput: function() {
       //return the following object containing the input values for "controller" to use
@@ -287,12 +293,6 @@ var UIController = (function() {
     displayPercentages: function(percentages) {
       var fields = document.querySelectorAll(DOMstrings.expensesPercLabel);
 
-      var nodeListForEach = function(list, callback) {
-        for (var i = 0; i < list.length; i++) {
-          callback(list[i], i);
-        }
-      };
-
       nodeListForEach(fields, function(current, index) {
         if (percentages[index] > 0) {
           current.textContent = percentages[index] + "%";
@@ -328,6 +328,25 @@ var UIController = (function() {
         months[month] + " " + year;
     },
 
+    // use this function to select all input section which we want to change the color to red
+    changedType() {
+      var fields = document.querySelectorAll(
+        DOMstrings.inputType +
+          "," +
+          DOMstrings.inputDescription +
+          "," +
+          DOMstrings.inputValue
+      );
+
+      // use nodeListForEach to add "red-focus" css to the input class
+      nodeListForEach(fields, function(cur) {
+        cur.classList.toggle("red-focus");
+      });
+
+      // change the button color to red
+      document.querySelector(DOMstrings.inputBtn).classList.toggle("red");
+    },
+
     // pass the DOMstrings for other "controller" to use, which is expose DOMstrings to public
     getDOMstrings: function() {
       return DOMstrings;
@@ -357,6 +376,11 @@ var controller = (function(budgetCtrl, UICtrl) {
     document
       .querySelector(DOM.container)
       .addEventListener("click", ctrlDeleteItem);
+
+    // change the type of input section by setting up a event listener
+    document
+      .querySelector(DOM.inputType)
+      .addEventListener("change", UICtrl.changedType);
   };
 
   var updatePercentages = function() {
